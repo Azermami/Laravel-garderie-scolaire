@@ -54,25 +54,19 @@ class PersonnelController extends Controller
     $personnel = User::findOrFail($id);
     return view('personnel.edit', compact('personnel'));
 }
+public function update(ProfileUpdateRequest $request): RedirectResponse
+{
+    $request->user()->fill($request->validated());
 
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'nom' => 'required|string|max:255',
-            'prenom' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
-        ]);
-    
-        $personnel = User::findOrFail($id);
-        $personnel->nom = $request->input('nom');
-        $personnel->prenom = $request->input('prenom');
-        $personnel->email = $request->input('email');
-        $personnel->save();
-    
-        return redirect()->route('admin.personnel.index')->with('success', 'Personnel mis à jour avec succès');
+    if ($request->user()->isDirty('email')) {
+        $request->user()->email_verified_at = null;
     }
-    
-    
+
+    $request->user()->save();
+
+    return Redirect::route('profile.show')->with('status', 'Profile updated successfully');
+}
+
 
     public function destroy($id)
     {

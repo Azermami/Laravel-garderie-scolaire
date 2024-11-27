@@ -41,7 +41,9 @@
                     <div id="children-container">
                         <!-- Les champs pour les enfants seront ajoutés dynamiquement ici -->
                     </div>
-                    @if(isset($currentAnneeScolaire))
+    
+
+@if(isset($currentAnneeScolaire))
     <input type="hidden" name="id_anneescolaire" value="{{ $currentAnneeScolaire->id }}">
 @endif
 

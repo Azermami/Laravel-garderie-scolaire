@@ -2,16 +2,17 @@
 <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 " id="sidenav-main">
   <div class="sidenav-header">
     <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-    <a class="align-items-center d-flex m-0 navbar-brand text-wrap" href="{{ route('dashboard') }}">
-        <img src="../assets/img/logo-ct.png" class="navbar-brand-img h-100" alt="...">
-        <span class="ms-3 font-weight-bold">Garderie Online Djerba </span>
-    </a>
+    <a class="align-items-center d-flex m-0 navbar-brand text-wrap" href="{{ route('parent.dashboard') }}">
+    <img src="../assets/img/logo-ct.png" class="navbar-brand-img h-100" alt="...">
+    <span class="ms-3 font-weight-bold">Garderie Online Djerba</span>
+</a>
+
   </div>
   <hr class="horizontal dark mt-0">
   <div class="collapse navbar-collapse  w-auto" id="sidenav-collapse-main">
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link {{ (Request::is('dashboard') ? 'active' : '') }}" href="{{ url('dashboard') }}">
+        <a class="nav-link {{ (Request::is('dashboard') ? 'active' : '') }}" href="{{ route('parent.dashboard') }}">
           <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
             <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
               <title>shop </title>
@@ -27,97 +28,51 @@
               </g>
             </svg>
           </div>
-          <span class="nav-link-text ms-1">Dashboard</span>
+         
         </a>
       </li>
       <li class="nav-item mt-2">
-   
+    <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Laravel Examples</h6>
 </li>
 <li class="nav-item">
-    <a class="nav-link {{ (Request::is('inscriptions') ? 'active' : '') }}" href="{{ route('inscriptions.index') }}">
+    <a class="nav-link {{ (Request::is('parent/suivie') ? 'active' : '') }}" href="{{ route('parent.suivie') }}">
         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
             <i style="font-size: 1rem;" class="fas fa-lg fa-list-ul ps-2 pe-2 text-center text-dark"></i>
         </div>
-        <span class="nav-link-text ms-1">Gestion des Inscriptions</span>
+        <span class="nav-link-text ms-1">Suivie de mes enfants</span>
     </a>
 </li>
 
-<li class="nav-item">
-    <a class="nav-link {{ (Request::is('enfants') ? 'active' : '') }}" href="{{ route('enfants.index') }}">
-        <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i style="font-size: 1rem;" class="fas fa-lg fa-list-ul ps-2 pe-2 text-center text-dark"></i>
-        </div>
-        <span class="nav-link-text ms-1">Liste des enfants inscrits</span>
-    </a>
-</li>
 
 <li class="nav-item">
-    <a class="nav-link {{ (Request::is('paiements') ? 'active' : '') }}" href="{{ route('paiements.index') }}">
+    <a class="nav-link {{ (Request::is('parent/suivie-paiements') ? 'active' : '') }}" href="{{ route('parent.suivie-paiements') }}">
         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
             <i style="font-size: 1rem;" class="fas fa-lg fa-credit-card ps-2 pe-2 text-center text-dark"></i>
         </div>
-        <span class="nav-link-text ms-1">Gestion de Paiement</span>
+        <span class="nav-link-text ms-1">Suivie de mes paiements</span>
     </a>
 </li>
 
-<!-- <li class="nav-item">
-    <a class="nav-link {{ (Request::is('inscriptions/create') ? 'active' : '') }}" href="{{ route('inscriptions.create') }}">
+<li class="nav-item">
+    <a class="nav-link {{ (Request::is('profile') ? 'active' : '') }}" href="{{ route('profile.show') }}">
         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i style="font-size: 1rem;" class="fas fa-lg fa-user-plus ps-2 pe-2 text-center text-dark"></i>
+            <i style="font-size: 1rem;" class="fas fa-lg fa-user ps-2 pe-2 text-center text-dark"></i>
         </div>
-        <span class="nav-link-text ms-1">Ajouter un Parent</span>
+        <span class="nav-link-text ms-1">Mon Profil</span>
     </a>
-</li> -->
+</li>
 
 
-<!-- <li class="nav-item">
-    <a class="nav-link {{ (Request::is('personnel/create') ? 'active' : '') }}" href="{{ route('personnel.create') }}">
-        <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-            Icon for personnel -->
-        <!-- </div>
-        <span class="nav-link-text ms-1">Ajouter Personnel</span>
-    </a>
-</li> --> 
+
 
 <li class="nav-item">
     <a class="nav-link {{ (Request::is('personnel') ? 'active' : '') }}" href="{{ route('admin.personnel.index') }}">
         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
             <!-- Icon for personnel list -->
         </div>
-        <span class="nav-link-text ms-1">Gestion de Personnel </span>
+        <span class="nav-link-text ms-1">Avis  </span>
     </a>
 </li>
-
-
-<li class="nav-item pb-2">
-    <a class="nav-link {{ (Request::is('anneescolaire*') ? 'active' : '') }}" href="{{ url('anneescolaire') }}">
-        <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i style="font-size: 1rem;" class="fas fa-lg fa-list-ul ps-2 pe-2 text-center {{ (Request::is('anneescolaire*') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
-        </div>
-        <span class="nav-link-text ms-1">Gestion des Années Scolaire</span>
-    </a>
-</li>
-
-
-<li class="nav-item pb-2">
-    <a class="nav-link {{ (Request::is('niveau-scolaire*') ? 'active' : '') }}" href="{{ url('niveau-scolaire') }}">
-        <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i style="font-size: 1rem;" class="fas fa-lg fa-graduation-cap ps-2 pe-2 text-center text-dark {{ (Request::is('niveau-scolaire*') ? 'text-white' : 'text-dark') }}" aria-hidden="true"></i>
-        </div>
-        <span class="nav-link-text ms-1">Gestion des Niveaux Scolaires</span>
-    </a>
-</li>
-
-<li class="nav-item pb-2">
-    <a class="nav-link {{ (Request::is('horraire*') ? 'active' : '') }}" href="{{ url('horraire') }}">
-        <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i style="font-size: 1rem;" class="fas fa-lg fa-clock ps-2 pe-2 text-center text-dark {{ (Request::is('horraire*') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
-        </div>
-        <span class="nav-link-text ms-1">Gestion des Horaires</span>
-    </a>
-</li>
-
-
   
 </aside>
 

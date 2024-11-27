@@ -28,6 +28,14 @@
             <label for="end_time" class="form-label">Heure de Fin</label>
             <input type="time" class="form-control" id="end_time" name="end_time" value="{{ old('end_time') }}" required>
         </div>
+
+
+        <div class="mb-3">
+    <label for="prix_horraire" class="form-label">Prix de l'Horaire</label>
+    <input type="number" step="0.01" class="form-control" id="prix_horraire" name="prix_horraire" value="{{ old('prix_horraire') }}" required>
+</div>
+
+
         <button type="submit" class="btn btn-success">Ajouter</button>
         <a href="{{ route('horraire.index') }}" class="btn btn-secondary">Retour</a>
     </form>

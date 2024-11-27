@@ -7,12 +7,15 @@ use Illuminate\Http\Request;
 
 class AnneeScolaireController extends Controller
 {
+    
     public function index()
     {
-        $anneesScolaires = AnneeScolaire::all();
+        // Use paginate() instead of get() to enable pagination
+        $anneesScolaires = AnneeScolaire::paginate(10); // Adjust the number as needed
+    
         return view('annéescolaire.index', compact('anneesScolaires'));
     }
-
+    
     public function create()
     {
         return view('annéescolaire.create');

@@ -43,6 +43,7 @@ class AdminController extends Controller
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'telephone' => 'required|string|max:20',
             'password' => 'required|string|min:8|confirmed',
         ]);
     

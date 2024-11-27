@@ -11,7 +11,8 @@ class NiveauScolaire extends Model
 
      protected $table = 'niveau_scolaires';
     //protected $fillable = ['niveau_scolaire'];
-    protected $fillable = ['niveau_scolaire', 'debut_annee', 'fin_annee'];
+    //protected $fillable = ['niveau_scolaire', 'debut_annee', 'fin_annee'];
+    protected $fillable = ['niveau_scolaire', 'debut_annee', 'fin_annee', 'prix_niveau'];
 
 
     public function getAnnees()
@@ -43,11 +44,14 @@ public function store(Request $request)
 
     return redirect()->route('niveau-scolaire.index')->with('success', 'Niveau scolaire ajouté avec succès');
 }
+// public function enfants()
+// {
+//     return $this->hasManyThrough(Enfant::class, NiveauEnfant::class, 'niveau_scolaire_id', 'id', 'id', 'enfant_id');
+// }
+
 public function enfants()
-{
-    return $this->hasManyThrough(Enfant::class, NiveauEnfant::class, 'niveau_scolaire_id', 'id', 'id', 'enfant_id');
-}
-
-
+    {
+        return $this->hasMany(Enfant::class, 'niveau_scolaire_id');
+    }
 }
 

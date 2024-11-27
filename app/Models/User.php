@@ -10,7 +10,7 @@ class User extends Authenticatable
     use Notifiable;
 
     protected $fillable = [
-        'nom', 'prenom', 'email', 'pwd', 'id_role', 'etat'
+        'nom', 'prenom', 'email','telephone', 'pwd', 'id_role', 'etat'
     ];
     
     protected $hidden = [
@@ -50,16 +50,25 @@ class User extends Authenticatable
 
 public function enfants()
 {
-    return $this->hasMany(Enfant::class, 'id_parent');
+    return $this->hasMany(Enfant::class, 'id_user');
 }
+
+
+public function paiements()
+    {
+        return $this->hasMany(Paiement::class, 'id_user'); 
+    }
+
+    // public function parent()
+    // {
+    //     return $this->hasOne(Parent::class);
+    // }
 
 
     public function parent()
     {
-        return $this->hasOne(Parent::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
-
-
-
+    
 
 }

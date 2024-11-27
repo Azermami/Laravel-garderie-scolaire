@@ -1,7 +1,5 @@
 @extends('layouts.user_type.auth')
 
-
-
 @section('content')
 
 <x-guest-layout>
@@ -43,6 +41,15 @@
                     @enderror
                 </div>
 
+                <!-- Téléphone -->
+                <div class="mt-4">
+                    <label for="telephone" class="block font-medium text-sm text-gray-700">Téléphone</label>
+                    <input id="telephone" class="block mt-1 w-full form-control" type="text" name="telephone" placeholder="Téléphone" value="{{ old('telephone') }}" required>
+                    @error('telephone')
+                        <span class="text-red-600">{{ $message }}</span>
+                    @enderror
+                </div>
+
                 <!-- Mot de Passe -->
                 <div class="mt-4">
                     <label for="password" class="block font-medium text-sm text-gray-700">Mot de Passe</label>
@@ -68,4 +75,5 @@
         </div>
     </div>
 </x-guest-layout>
+
 @endsection

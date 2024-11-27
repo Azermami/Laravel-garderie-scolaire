@@ -3,11 +3,21 @@
         <div class="row align-items-center justify-content-lg-between">
             <div class="col-lg-6 mb-lg-0 mb-4">
                 <div class="copyright text-center text-sm text-muted text-lg-start">
-                    © <script>
-                        document.write(new Date().getFullYear())
-                    </script>, made with <i class="fa fa-heart"></i> by
-                    <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Creative Tim</a>&amp; <a style="color: #252f40;" href="https://www.updivision.com" class="font-weight-bold ml-1" target="_blank">UPDIVISION</a>
-                    for a better web.
+                <script>
+    const now = new Date();
+    const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    };
+    document.write(now.toLocaleString('fr-FR', options));
+</script>
+, Bienvenu  <i class="fa fa-heart"></i> 
+                    <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">a votre garderie scolaire Online.</a> <a style="color: #252f40;" class="font-weight-bold ml-1" target="_blank"></a>
+                    
                 </div>
             </div>
             <div class="col-lg-6">

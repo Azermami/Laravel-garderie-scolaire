@@ -10,11 +10,11 @@ class HorraireController extends Controller
     /**
      * Affiche la liste des horaires.
      */
-    public function index()
-    {
-        $horraires = Horraire::all(); // Récupère tous les horaires
-        return view('horraire.index', compact('horraires')); // Retourne la vue avec les horaires
+    public function index() {
+        $horraires = Horraire::all(); // Assurez-vous que chaque horaire a un prix
+        return view('horraire.index', compact('horraires'));
     }
+    
 
     /**
      * Affiche le formulaire pour créer un nouvel horaire.
@@ -27,18 +27,36 @@ class HorraireController extends Controller
     /**
      * Stocke un nouvel horaire dans la base de données.
      */
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'horraire' => 'required|string|max:255',
+    //         'start_time' => 'nullable|date_format:H:i',
+    //         'end_time' => 'nullable|date_format:H:i',
+    //     ]);
+
+    //     Horraire::create($request->all());
+
+    //     return redirect()->route('horraire.index')->with('success', 'Horaire ajouté avec succès.');
+    // }
+
+
+
     public function store(Request $request)
     {
         $request->validate([
             'horraire' => 'required|string|max:255',
-            'start_time' => 'nullable|date_format:H:i',
-            'end_time' => 'nullable|date_format:H:i',
+            'start_time' => 'required',
+            'end_time' => 'required',
+            'prix_horraire' => 'required|numeric|min:0',
         ]);
-
+    
         Horraire::create($request->all());
-
-        return redirect()->route('horraire.index')->with('success', 'Horaire ajouté avec succès.');
+    
+        return redirect()->route('horraire.index')->with('success', 'Horaire ajouté avec succès');
     }
+    
+
 
     /**
      * Affiche le formulaire pour modifier un horaire existant.
@@ -51,23 +69,27 @@ class HorraireController extends Controller
     /**
      * Met à jour un horaire existant dans la base de données.
      */
-    public function update(Request $request, Horraire $horraire)
+    public function update(Request $request, $id)
 {
-    // Testez avec une valeur en dur pour start_time
-    $request->merge(['start_time' => '14:30']); // Exemple de valeur correcte
-
     $request->validate([
         'horraire' => 'required|string|max:255',
-        'start_time' => 'nullable|date_format:H:i',
-        'end_time' => 'nullable|date_format:H:i',
+        'start_time' => 'required|date_format:H:i',
+        'end_time' => 'required|date_format:H:i',
+        'prix_horraire' => 'required|numeric|min:0', // Validation pour le prix
     ]);
 
-    $horraire->update($request->all());
+    $horraire = Horraire::findOrFail($id);
+    $horraire->update([
+        'horraire' => $request->horraire,
+        'start_time' => $request->start_time,
+        'end_time' => $request->end_time,
+        'prix_horraire' => $request->prix_horraire, // Mise à jour du prix
+    ]);
 
     return redirect()->route('horraire.index')->with('success', 'Horaire modifié avec succès.');
 }
 
-    
+
 
     /**
      * Supprime un horaire existant de la base de données.

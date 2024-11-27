@@ -18,7 +18,8 @@ use App\Http\Controllers\HorraireController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\EnfantController;
 use App\Http\Controllers\DashboardController;
-
+use App\Http\Controllers\PaiementController;
+use App\Http\Controllers\ProfileController; 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -39,13 +40,15 @@ Route::get('/front', function () {
 Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisterController::class, 'create'])->name('register');
     Route::post('/register', [RegisterController::class, 'store']);
-    
+    Route::get('/front/register-child', [RegisterController::class, 'showChildRegistrationForm'])->name('front.register.child');
+    Route::post('/front/register-child', [RegisterController::class, 'registerChild'])->name('front.register.child.post');
+    // Formulaire d'inscription des enfants (front-end)
+Route::get('/front/register-child', [RegisterController::class, 'showChildRegistrationForm'])->name('front.register.child');
+Route::post('/front/register-child', [RegisterController::class, 'registerChild'])->name('front.register.child.post');
+
 // Route accessible à tous les utilisateurs
 Route::get('/front', [FrontController::class, 'showDashboard'])->name('front');
-
-
-   // Route::post('/register-child', [ChildRegistrationController::class, 'register'])->name('register.child');
-    Route::post('/register-child', [ChildRegistrationController::class, 'registerChild'])->name('register.child');
+    Route::post('/register-child', [InscriptionController::class, 'registerChild'])->name('register.child');
 
 
     Route::get('/login', [SessionsController::class, 'create'])->name('login');
@@ -112,6 +115,10 @@ Route::get('/api/niveaux/{id}/annees', [InscriptionController::class, 'getAnnees
  //Route::get('/admin/parents-pending', [ParentController::class, 'showPending'])->name('parents.pending');
  Route::post('/admin/validate-parent/{id}', [ParentController::class, 'validateParent'])->name('parents.validate');
  Route::get('/parents-pending', [ParentController::class, 'showPending'])->name('parents.pending');
+ Route::get('/parent/profile', [ProfileController::class, 'show'])->name('profile.show');
+ Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+ Route::post('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
+
 
  Route::resource('anneescolaire', AnneeScolaireController::class);
 
@@ -136,6 +143,17 @@ Route::put('inscriptions/{id}', [InscriptionController::class, 'update'])->name(
 Route::post('inscriptions/{id}/validate', [InscriptionController::class, 'validate'])->name('inscriptions.validate');
 Route::post('/inscriptions/validate/{id}', [InscriptionController::class, 'validateParent'])->name('inscriptions.validate');
 Route::get('/inscriptions/valides', [InscriptionController::class, 'showValidated'])->name('inscriptions.valides');
+Route::get('/anneescolaire/{id}/enfants', [AnneeScolaireController::class, 'showEnfants'])->name('anneescolaire.enfants');
+
+Route::put('/enfant/{id}', [EnfantController::class, 'update'])->name('enfant.update');
+
+Route::get('/enfants/annee/{annee_scolaire}', [TonController::class, 'redirectEnfantsByAnneeScolaire'])->name('enfants.par_annee');
+
+Route::get('/enfants/{id}/edit', [EnfantController::class, 'edit'])->name('enfants.edit');
+Route::delete('/enfants/{id}', [EnfantController::class, 'destroy'])->name('enfants.destroy');
+Route::put('/enfants/{id}', [EnfantController::class, 'update'])->name('enfants.update');
+Route::resource('enfants', EnfantController::class);
+Route::get('/api/niveaux/{niveau}/classes', [NiveauController::class, 'getClasses']);
 
 //gestion des inscription 
 // Routes pour la gestion des inscriptions
@@ -144,9 +162,46 @@ Route::post('/inscription/store', [InscriptionController::class, 'store'])->name
 Route::get('/inscriptions', [InscriptionController::class, 'index'])->name('inscriptions.index');
 
 
+
+Route::get('/paiements/{id}/recu', [PaiementController::class, 'recu'])->name('paiements.recu');
+
+
+
+Route::resource('paiements', PaiementController::class);
+Route::get('/get-montant', [PaiementController::class, 'getMontant'])->name('paiements.get-montant');
+Route::delete('/paiements/{paiement}', [PaiementController::class, 'destroy'])->name('paiements.destroy');
+Route::get('/paiements/{paiement}', [PaiementController::class, 'show'])->name('paiements.show');
+
+Route::get('/paiements/create', [PaiementController::class, 'create'])->name('paiements.create');
+Route::post('/paiements', [PaiementController::class, 'store'])->name('paiements.store');
+
+// Route::get('/parent/profile', [ParentController::class, 'profile'])->name('parent.profile');
+// Route::get('/parent/children', [ParentController::class, 'children'])->name('parent.children');
+// Route::get('/parent/dashboard', [ParentController::class, 'index'])->name('parent.dashboard');
+// routes/web.php
+
+    Route::get('/parent/dashboard', [ParentController::class, 'dashboard'])->name('parent.dashboard');
+    Route::get('/parent/children', [ParentController::class, 'children'])->name('parent.children');
+    Route::get('/parent/profile', [ParentController::class, 'profile'])->name('parent.profile');
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('parent/enfants', [ParentController::class, 'suivieEnfants'])->name('parent.enfants');
+    Route::get('/parent/suivie', [ParentController::class, 'suivie'])->name('parent.suivie');
+    Route::get('parent/suivie-paiements', [ParentController::class, 'suiviePaiements'])->name('parent.suivie-paiements');
+
+
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+Route::get('/api/niveaux/{niveauScolaireId}/classes', [EnfantController::class, 'getClasses']);
+
+Route::get('/niveaux-scolaires/{id}/annees', [EnfantController::class, 'getAnnees']);
+Route::get('/niveaux-scolaires/{id}/classes', [EnfantController::class, 'getClasses']);
+Route::get('/api/niveaux/{niveau}/annees', [EnfantController::class, 'getAnneesByNiveau']);
+
 Route::get('/get-classes/{niveauId}', [NiveauEnfantController::class, 'getClasses']);
 Route::resource('niveau_enfants', NiveauEnfantController::class);
-
+Route::get('/admin/statistics', [DashboardController::class, 'showStatistics']);
 
 //gestion des personnel 
 // Personnel routes pour le croud

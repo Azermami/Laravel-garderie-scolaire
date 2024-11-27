@@ -15,23 +15,40 @@ class InscriptionController extends Controller
 {
     public function index(Request $request)
     {
+        // Récupérer l'état (validé ou non validé) et l'année scolaire sélectionnée
         $etat = $request->input('etat', 0); // Valeur par défaut 0 pour non validés
         $selectedAnneeScolaire = $request->input('annee_scolaire'); // Obtenez l'année scolaire sélectionnée
-    
-        // Récupérez les parents selon leur état
-        $personnels = User::where('id_role', 2)
-            ->where('etat', $etat)
-            ->paginate(10);
     
         // Récupérer toutes les années scolaires pour le menu déroulant
         $anneesScolaires = AnneeScolaire::all();
     
-        // Filtrer les enfants en fonction de l'année scolaire sélectionnée
-        $enfants = Enfant::when($selectedAnneeScolaire, function ($query, $selectedAnneeScolaire) {
-            return $query->where('id_anneescolaire', $selectedAnneeScolaire);
-        })->get();
+        // Initialisation de la requête de base pour récupérer les parents selon leur état (validé ou non)
+        $query = User::where('id_role', 2) // Parent role id is 2
+                     ->where('etat', $etat); // Filtrer selon l'état validé/non validé
+                     if ($request->has('search') && !empty($request->input('search'))) {
+                        $search = $request->input('search');
+                        $query->where(function ($q) use ($search) {
+                            $q->where('nom', 'like', "%$search%")
+                              ->orWhere('prenom', 'like', "%$search%");
+                        });
+                    }
+                
+        // Filtrer aussi par l'année scolaire sélectionnée si disponible
+        if ($selectedAnneeScolaire) {
+            $query->whereHas('enfants', function ($q) use ($selectedAnneeScolaire) {
+                $q->where('id_anneescolaire', $selectedAnneeScolaire);
+            });
+        }
     
-        return view('inscriptions.index', compact('personnels', 'etat', 'anneesScolaires', 'enfants', 'selectedAnneeScolaire'));
+        // Paginer les résultats
+        $personnels = $query->paginate(10);
+    
+        return view('inscriptions.index', [
+            'personnels' => $personnels,
+            'etat' => $etat,
+            'anneesScolaires' => $anneesScolaires,
+            'selectedAnneeScolaire' => $selectedAnneeScolaire
+        ]);
     }
     
 
@@ -45,21 +62,6 @@ class InscriptionController extends Controller
         
         return view('inscriptions.index', compact('personnels'));
     }
-    
-    // public function index()
-    // {
-    //     // Requête pour obtenir les parents non vérifiés avec leur téléphone
-    //     $personnels = DB::table('users')
-    //         ->join('parent', 'users.id', '=', 'parent.id')
-    //         ->where('users.id_role', 2) // Rôle 2 pour les parents
-    //         ->where('users.etat', 0) // État 0 pour non vérifiés
-    //         ->select('users.id', 'users.nom', 'users.prenom', 'users.email', 'parent.telephone')
-            
-    //         ->get();
-        
-    //     // Retourne la vue avec les données
-    //     return view('inscriptions.index', compact('personnels'));
-    // }
 
 public function getAnnees($niveauScolaireId)
 {
@@ -100,50 +102,49 @@ public function getAnnees($niveauScolaireId)
     
     
     public function store(Request $request)
-    {
-        // Vous pouvez commenter cette ligne après avoir testé les données envoyées
-        // dd($request->all());
-    
-        // Valider les données soumises
-        $request->validate([
-            'parent_name' => 'required|string',
-            'parent_firstname' => 'required|string',
-            'email' => 'required|email',
-            'phone' => 'required',
-            'password' => 'required|min:6',
-            'children.*.name' => 'required|string',
-            'children.*.prenom' => 'required|string',
-            'children.*.date_de_naissance' => 'required|date',
-            'children.*.niveau_scolaire_id' => 'required|exists:niveaux_scolaires,id',
-            'children.*.horraire_id' => 'required|exists:horraires,id',
-            'id_anneescolaire' => 'required|exists:anneescolaire,id', 
-        ]);
-        
-        $id_anneescolaire = $request->input('id_anneescolaire'); 
-        
+{
+    $request->validate([
+        'parent_name' => 'required|string',
+        'parent_firstname' => 'required|string',
+        'email' => 'required|email',
+        'phone' => 'required',
+        'password' => 'required|min:6',
+        'children.*.name' => 'required|string',
+        'children.*.prenom' => 'required|string',
+        'children.*.date_de_naissance' => 'required|date',
+        'children.*.niveau_scolaire_id' => 'required|exists:niveaux_scolaires,id',
+        'children.*.horraire_id' => 'required|exists:horraires,id',
+    ]);
 
-    
-        // Vérifiez si 'children' est un tableau valide
-        if ($request->has('children')) {
-            // Enregistrer les enfants
-            foreach ($request->input('children') as $childData) {
-                Enfant::create([
-                    'nom' => $childData['name'],
-                    'prenom' => $childData['prenom'],
-                    'date_de_naissance' => $childData['date_de_naissance'],
-                    'niveau_scolaire_id' => $childData['niveau_scolaire_id'],
-                    'horraire_id' => $childData['horraire_id'],
-                    'id_anneescolaire' => $id_anneescolaire,
-                    'id_parent' => $parentId, // Assurez-vous que $parentId est correctement défini
-                ]);
-            
-            
-            }
-        }
-    
-        return redirect()->route('success.page')->with('success', 'Enregistrement réussi');
+    // Enregistrement du parent
+    $parent = new User();
+    $parent->nom = $request->input('parent_name');
+    $parent->prenom = $request->input('parent_firstname');
+    $parent->email = $request->input('email');
+    $parent->pwd = bcrypt($request->input('password')); // Encrypter le mot de passe
+    $parent->telephone = $request->input('phone');
+    $parent->id_role = 2; // Assurez-vous que 2 est bien l'ID des parents
+    $parent->etat = 0; // Parent non validé par défaut
+    $parent->save();
+
+    // Récupérer l'année scolaire courante
+    $id_anneescolaire = $request->input('id_anneescolaire');
+
+    // Enregistrement des enfants
+    foreach ($request->input('children') as $childData) {
+        $enfant = new Enfant();
+        $enfant->nom = $childData['name'];
+        $enfant->prenom = $childData['prenom'];
+        $enfant->date_de_naissance = $childData['date_de_naissance'];
+        $enfant->id_parent = $parent->id;
+        $enfant->id_anneescolaire = $id_anneescolaire; // Associer à l'année scolaire courante
+        $enfant->niveau_scolaire_id = $childData['niveau_scolaire_id'];
+        $enfant->horraire_id = $childData['horraire_id'];
+        $enfant->save();
     }
 
+    return redirect()->route('inscriptions.index')->with('success', 'Enfants et parent enregistrés avec succès.');
+}
 
     
 }

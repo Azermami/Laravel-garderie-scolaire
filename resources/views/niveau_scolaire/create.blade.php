@@ -31,6 +31,12 @@
             <input type="number" class="form-control" id="fin_annee" name="fin_annee" value="{{ old('fin_annee') }}" required>
         </div>
 
+        <div class="mb-3">
+    <label for="prix_niveau" class="form-label">Prix du Niveau Scolaire</label>
+    <input type="number" step="0.01" class="form-control" id="prix_niveau" name="prix_niveau" value="{{ old('prix_niveau') }}" required>
+</div>
+
+
         <button type="submit" class="btn btn-success">Ajouter</button>
         <a href="{{ route('niveau-scolaire.index') }}" class="btn btn-secondary">Retour</a>
     </form>
